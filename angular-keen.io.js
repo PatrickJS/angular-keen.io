@@ -75,7 +75,16 @@
     }];
   })
   .factory('Keen', ['KeenService', function(KeenService) {
-    return KeenService;
+    return {
+      addEvent: function(event, object) {
+        KeenService.addEvent(event, object);
+      },
+      trackEvent: function() {
+        this.addEvent.apply(this, arguments);
+      },
+      trackExternalLink: function(element, event, object) {
+        return KeenService.trackExternalLink(element, event, object);
+      }
   }]);
 
 
