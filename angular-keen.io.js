@@ -85,6 +85,7 @@
       trackExternalLink: function(element, event, object) {
         return KeenService.trackExternalLink(element, event, object);
       }
+    }
   }]);
 
 
