@@ -1,0 +1,17 @@
+{
+  "name": "angular-keen.io",
+  "main": "angular-keen.io.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/gdi2290/angular-keen.io",
+  "authors": [
+    "gdi2290 <github@gdi2290.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
