@@ -23,7 +23,7 @@
   angular.module('ngKeen', [])
   .provider('KeenService', function() {
     var _asyncLoading = false;
-    var _scriptUrl = '//dc8na2hxrj29i.cloudfront.net/code/keen-2.1.0-min.js';
+    var _scriptUrl = '//d26b395fwzu5fz.cloudfront.net/latest/keen.min.js';
 
     this.asyncLoading = function(config) {
       _asyncLoading = config || _asyncLoading;
