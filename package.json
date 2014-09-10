@@ -6,6 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "gdi2290",
+    "PatrickJS",
+    "angular",
+    "angularjs",
+    "keen",
+    "keen.io",
+    "ngKeen",
+    "keen.js",
+    "keenjs"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/gdi2290/angular-keen.io.git"
