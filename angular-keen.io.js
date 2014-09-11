@@ -86,6 +86,9 @@
         return KeenService.trackExternalLink(element, event, object);
       }
     }
+  }])
+  .factory('$keen', ['Keen', function(Keen) {
+    return Keen;
   }]);
 
 
