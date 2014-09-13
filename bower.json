@@ -6,6 +6,17 @@
   "authors": [
     "gdi2290 <github@gdi2290.com>"
   ],
+  "keywords": [
+    "gdi2290",
+    "PatrickJS",
+    "angular",
+    "angularjs",
+    "keen",
+    "keen.io",
+    "ngKeen",
+    "keen.js",
+    "keenjs"
+  ],
   "license": "MIT",
   "ignore": [
     "**/.*",
