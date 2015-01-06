@@ -1,7 +1,34 @@
-!function(window, angular, Keen) {
+!function(global, angular) {
   'use strict';
+  
+  global._Keen = global._Keen || {};
+  global.Keen = global.Keen || function(event) {
+    global._Keen.clients = global._Keen.clients || {};
+    global._Keen.clients[event.projectId] = this;
+    this._config = event;
+  };
+  global.Keen.ready = global.Keen.ready || function(event){
+    global._Keen.ready = global._Keen.ready || [];
+    global._Keen.ready.push(event);
+  };
+  
+  var events = ['addEvent','setGlobalProperties','trackExternalLink','on'];
+  function init(event) {
+    return function(){
+      this['_' + event] = this['_' + event] || [];
+      this['_' + event].push(arguments);
+      return this;
+    };
+  }  
+  for(var i = 0; i < events.length; i++) {
+    var event_name = events[i];
+    // define init above in here
+    global.Keen.prototype[event_name] = global.Keen.prototype[event_name] || init(event_name);
+  }
+  
 
-  Keen = Keen || {
+/*
+  global.Keen = Keen || {
     configure: function(e) {
       this._cf = e;
     },
@@ -17,13 +44,12 @@
       this._ocrq.push(e);
     }
   };
-
-  angular.module('angular-keen.io', ['ngKeen']);
-
-  angular.module('ngKeen', [])
-  .provider('KeenService', function() {
+*/
+  
+  function $KeenServiceProvider() {
     var _asyncLoading = false;
-    var _scriptUrl = '//d26b395fwzu5fz.cloudfront.net/latest/keen.min.js';
+    var _client;
+    var _scriptUrl = 'https://d26b395fwzu5fz.cloudfront.net/3.2.0/keen.min.js';
 
     this.asyncLoading = function(config) {
       _asyncLoading = config || _asyncLoading;
@@ -36,14 +62,19 @@
     };
 
     this.configure = function(config) {
-      Keen.configure(config);
+      _client = Keen(config);
+      return this;
+    };
+    
+    this.client = function() {
+      return _client;
     };
 
     // Create a script tag with moment as the source
     // and call our onScriptLoad callback when it
     // has been loaded
-    function createScript($document, callback) {
-      var scriptTag = $document.createElement('script');
+    function createScript(callback) {
+      var scriptTag = document.createElement('script');
       scriptTag.type = 'text/javascript';
       scriptTag.async = true;
       scriptTag.src = _scriptUrl;
@@ -53,28 +84,20 @@
         }
       };
       scriptTag.onload = callback;
-      var s = $document.getElementsByTagName('body')[0];
-      s.appendChild(scriptTag);
+      var s = document.getElementsByTagName('scipt')[0];
+      s.parentNode.insertBefore(scriptTag, s);
+      // s.appendChild(scriptTag);
     }
 
-    this.$get = ['$q', '$document', '$window', '$timeout', function($q, $document, $window, $timeout) {
-      var deferred = $q.defer();
-      var _keen = $window.keen;
-
+    this.$get = function() {
       if (_asyncLoading) {
-        // Load client in the browser
-        var onScriptLoad = function() {
-          $timeout(function() {
-            deferred.resolve($window.d3);
-          });
-        };
-        createScript($document[0], onScriptLoad);
+        createScript();
       }
+      return _client;
+    };
+  }
 
-      return (_asyncLoading) ? deferred.promise: _keen;
-    }];
-  })
-  .factory('Keen', ['KeenService', function(KeenService) {
+  function $Keen(KeenService) {
     return {
       addEvent: function(event, object) {
         KeenService.addEvent(event, object);
@@ -86,10 +109,92 @@
         return KeenService.trackExternalLink(element, event, object);
       }
     }
-  }])
-  .factory('$keen', ['Keen', function(Keen) {
-    return Keen;
-  }]);
+  };
+  
+  angular.module('ngKeen', [])
+  .provider('KeenService', $KeenServiceProvider)
+  .provider('$keenService', $KeenServiceProvider)
+  .factory('Keen', ['KeenService', $Keen])
+  .factory('$keen', ['$keenService', $Keen]);
+  
+  angular.module('angular-keen.io', ['ngKeen']);
+
+/*
+
+// Keen.io javascript sdk
+
+!function(init,root) {
+  init('Keen','https://d26b395fwzu5fz.cloudfront.net/3.2.0/keen.min.js', root);
+}(function(keen_text, script_url, global) {
+  global['_' + keen_text] = {};
+  global[keen_text] = function(event) {
+    global['_' + keen_text].clients = global['_' + keen_text].clients || {};
+    global['_' + keen_text].clients[event.projectId] = this;
+    this._config = event;
+  };
+  global[keen_text].ready = function(event){
+    global['_' + keen_text].ready = global['_' + keen_text].ready || [];
+    global['_' + keen_text].ready.push(event);
+  };
+  var events = ['addEvent','setGlobalProperties','trackExternalLink','on'];
 
 
-}(this, this.angular, this.Keen);
+  for(var event_index = 0; event_index < events.length; event_index++) {
+    var event_name = events[event_index];
+    var init = function(event) {
+      return function(){
+        this['_' + event] = this['_' + event] || [];
+        this['_' + event].push(arguments);
+        return this;
+      };
+    }  
+    global[keen_text].prototype[event_name] = init(event_name);
+  }
+  var script_dom = document.createElement('script');
+  script_dom.async = !0;
+  script_dom.src = script_url;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(script_dom, s);
+}, this);
+
+// from
+
+!function(a,b) {
+  a("Keen","https://d26b395fwzu5fz.cloudfront.net/3.2.0/keen.min.js",b)
+}(function(a,b,c) {
+  var d,e,f;
+  c["_"+a] = {},
+  c[a] = function(b) {
+    c["_"+a].clients = c["_"+a].clients || {},
+    c["_"+a].clients[b.projectId] = this,
+    this._config=b
+    
+  },
+  c[a].ready = function(b){
+    c["_"+a].ready = c["_"+a].ready || [],
+    c["_"+a].ready.push(b)
+    
+  },
+  d=["addEvent","setGlobalProperties","trackExternalLink","on"];
+  for(var g=0;g<d.length;g++) {
+    var h = d[g],
+    i = function(a) {
+      return function(){
+        return this["_"+a] = this["_"+a] || [],
+        this["_"+a].push(arguments),
+        this
+      }
+    };
+    c[a].prototype[h] = i(h)
+  }
+  e = document.createElement("script"),
+  e.async = !0,
+  e.src = b,
+  f = document.getElementsByTagName("script")[0],
+  f.parentNode.insertBefore(e,f)
+},this);
+
+*/
+
+
+}(this, this.angular);
