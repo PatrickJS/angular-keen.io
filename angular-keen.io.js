@@ -26,29 +26,9 @@
     global.Keen.prototype[event_name] = global.Keen.prototype[event_name] || init(event_name);
   }
   
-
-/*
-  global.Keen = Keen || {
-    configure: function(e) {
-      this._cf = e;
-    },
-    addEvent: function(e,t,n,i) {
-      this._eq = this._eq || [];
-      this._eq.push([e,t,n,i]);
-    },
-    setGlobalProperties: function(e) {
-      this._gp = e;
-    },
-    onChartsReady: function(e) {
-      this._ocrq = this._ocrq || [];
-      this._ocrq.push(e);
-    }
-  };
-*/
-  
   function $KeenServiceProvider() {
     var _asyncLoading = false;
-    var _client;
+    var _client = null;
     var _scriptUrl = 'https://d26b395fwzu5fz.cloudfront.net/3.2.0/keen.min.js';
 
     this.asyncLoading = function(config) {
